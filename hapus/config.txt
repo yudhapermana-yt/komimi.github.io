@@ -1,0 +1,108 @@
+redir-port: 9797
+tproxy-port: 9898
+mode: rule
+allow-lan: true
+unified-delay: true
+bind-address: '*'
+# info / warning / error / debug / silent
+log-level: error
+ipv6: true
+geodata-mode: true
+geodata-loader: memconservative
+external-controller: 0.0.0.0:9090
+external-ui: ./dashboard/dist
+enable-process: false
+profile:
+  store-selected: true
+  store-fake-ip: false
+  sniffer: # sniff domain name optional configuration
+  enable: false
+  sniffing:
+    - tls
+    - http
+  force-domain:
+    - +.v2ex.com
+  port-whitelist:
+    - 80
+    - 443
+tun:
+  enable: false
+  # biarkan default utun
+  device: utun
+  mtu: 9000
+  stack: system
+  dns-hijack:
+    - any:53
+  auto-route: false
+  auto-detect-interface: false
+  strict-route: false
+dns:
+  enable: true
+  ipv6: true # false akan mengembalikan hasil kosong untuk AAAA
+  prefer-h3: false
+  default-nameserver:
+    - 8.8.8.8
+  listen: 0.0.0.0:1053
+  use-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - '+.lan'
+    - '+.stun.*.*'
+    - '+.stun.*.*.*'
+    - '+.stun.*.*.*.*'
+    - '+.stun.*.*.*.*.*'
+  proxy-server-nameserver:
+    - '1.0.0.1'
+  nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+hosts:
+  '+.clash.meta': 127.0.0.1
+  'ota.googlezip.net': 127.0.0.1
+  'ota-cache1.googlezip.net': 127.0.0.1
+  'ota-cache2.googlezip.net': 127.0.0.1
+proxies:
+proxy-groups:
+  - name: "Liveon"
+    type: select
+    use:
+      - liveon
+  - name: "Vip"
+    type: select
+    use:
+      - vip
+  - name: "Gratis"
+    type: select
+    use:
+      - gratis
+proxy-providers:
+  vip:
+    type: http
+    behavior: domain
+    url: https://raw.githubusercontent.com/yudhapermana-yt/kencana/main/vip.yaml
+    path: ./assets/vip.yaml
+    health-check:
+      enable: true
+      url: http://cp.cloudflare.com/generate_204
+      interval: 86400
+  gratis:
+    type: http
+    behavior: domain
+    url: https://raw.githubusercontent.com/yudhapermana-yt/kencana/main/gratis.yaml
+    path: ./assets/edu.yaml
+    health-check:
+      enable: true
+      url: http://cp.cloudflare.com/generate_204
+      interval: 86400
+  liveon:
+    type: http
+    behavior: domain
+    url: https://raw.githubusercontent.com/yudhapermana-yt/kencana/main/on.yaml
+    path: ./assets/liveon.yaml
+    health-check:
+      enable: true
+      url: http://cp.cloudflare.com/generate_204
+      interval: 86400
+rules:
+  - MATCH,Vip
